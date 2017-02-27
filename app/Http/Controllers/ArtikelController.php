@@ -12,12 +12,12 @@ class ArtikelController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-  
-   public function index()
+    public function index()
     {
         $artikel = Artikel::orderBy('id', 'DESC')->paginate(14);
         return view('artikel.index')->with('artikel', $artikel);
     }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -25,7 +25,7 @@ class ArtikelController extends Controller
      */
     public function create()
     {
-        return view('artikel.add');//
+        return view('artikel.add');
     }
 
     /**
@@ -36,7 +36,20 @@ class ArtikelController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //memvalidasi data yang mau di store
+        $this->validate($request, [
+            'judul' => 'required',
+            'isi' => 'required'
+        ]);
+
+        // membuat varibel untuk post data ke dalam model agar bisa di input ke database
+        $tambah = new Artikel();
+        $tambah->judul_artikel = $request['judul'];
+        $tambah->isi_artikel = $request['isi'];
+        $tambah->save();
+
+        //mengembalikan ke halaman view index artikel
+        return redirect()->to('/artikel');
     }
 
     /**
@@ -47,9 +60,10 @@ class ArtikelController extends Controller
      */
     public function show($id)
     {
-        //
+        $artikel = Artikel::find($id);
+        return view('artikel.tampil')->with('artikel',$artikel);
     }
-
+    
     /**
      * Show the form for editing the specified resource.
      *
@@ -70,7 +84,12 @@ class ArtikelController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $update = Artikel::where('id',$id)->first();
+        $update->judul_artikel = $request['judul'];
+        $update->isi_artikel = $request['isi'];
+        $update->update();
+        
+        return redirect()->to('artikel');
     }
 
     /**
@@ -81,6 +100,10 @@ class ArtikelController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $destroy = Artikel::find($id);
+        $destroy->delete();
+
+        return redirect()->to('/artikel');
+    } //
     }
-}
+

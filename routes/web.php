@@ -18,4 +18,12 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index');
+
+Route::group(['middleware'=>['auth']],function(){
 Route::get('/artikel', 'ArtikelController@index');
+Route::get('/artikel/add','ArtikelController@create');
+Route::post('/artikel/store','ArtikelController@store');
+Route::get('/artikel/show/{id}','ArtikelController@show');
+Route::post('/artikel/update/{id}','ArtikelController@update');
+Route::get('/artikel/destroy/{id}','ArtikelController@destroy');
+});
